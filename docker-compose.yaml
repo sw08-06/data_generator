@@ -21,6 +21,8 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - influxdb
+    env_file:
+      - .env
 
 volumes:
   influxdb-data:
