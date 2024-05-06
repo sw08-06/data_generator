@@ -28,7 +28,7 @@ def dataGenerator(window_size):
         for length in data_lengths:
             for i in range(length):
                 random_number = random.random()
-                data_points.append(influxdb_client.Point("data").tag("data_type", data_type).tag("index", i).field("value", random_number))
+                data_points.append(influxdb_client.Point("data").tag("data_type", data_type).tag("index", i).tag("window_id",1).field("value", random_number))
     return data_points
 
 
@@ -82,9 +82,10 @@ class DataGenerator:
 
         subjects = [subject for subject in os.listdir(path)]
 
+        mock_data = []
         for i, subject in subjects:
             start_window_id = self.prediction_amount * i
-            subject_data = self.create_subject_data(subject, self.dates[i], start_window_id)
+            mock_data.append(self.create_subject_data(subject, self.dates[i], start_window_id))
 
 
     def real_time_data_generator(self):
