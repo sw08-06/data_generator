@@ -15,6 +15,15 @@ url = os.getenv("INFLUX_URL")
 
 
 def data_generator(window_size):
+    """
+    Generates one window of data points.
+
+    Args:
+        window_size (int): Size of window in seconds.
+
+    Returns:
+        list: List of data points.
+    """
     data_dict = {"bvp": 64, "eda": 4, "temp": 4}
     data_points = []
 
