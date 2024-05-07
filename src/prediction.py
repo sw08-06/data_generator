@@ -36,7 +36,7 @@ class PredictionGenerator:
                     window_id += 1
                 if wear_mode == "work_day":
                     current_time += 28800 * 10**9
-        print(f"{len(self.prediction_points)} prediction points generated. Highest window_id: {window_id}")
+        print(f"{len(self.prediction_points)} prediction points generated. Highest window_id: {window_id - 1}")
         return self.prediction_points
 
     def random_wear_mode(self):
@@ -65,31 +65,3 @@ class PredictionGenerator:
     def format_timestamp(self, time_nano):
         dt = datetime.fromtimestamp(time_nano / 1e9, timezone.utc)
         return "{}{:03.0f}".format(dt.strftime("%Y-%m-%dT%H:%M:%S.%f"), time_nano % 1e3)
-
-
-if __name__ == "__main__":
-    stress_probability_dict = {
-        "weekend": {
-            "0-3": 0.02,
-            "3-6": 0.02,
-            "6-9": 0.02,
-            "9-12": 0.1,
-            "12-15": 0.1,
-            "15-18": 0.1,
-            "18-21": 0.02,
-            "21-24": 0.02,
-        },
-        "weekday": {
-            "0-3": 0.05,
-            "3-6": 0.05,
-            "6-9": 0.5,
-            "9-12": 0.4,
-            "12-15": 0.3,
-            "15-18": 0.2,
-            "18-21": 0.1,
-            "21-24": 0.05,
-        },
-    }
-    wear_time_dict = {"work_day": 28800 * 10**9, "all_day": 86400 * 10**9, "not_wear": 0}
-    dataGen = PredictionGenerator(days=28, window_size=60, stress_probability_dict=stress_probability_dict, wear_time_dict=wear_time_dict)
-    prediction_points = dataGen.generate_predictions()

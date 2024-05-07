@@ -9,6 +9,7 @@ import influxdb_client
 class DataGenerator:
     def __init__(self, file_path, amount_windows, stress_ratio, window_size, first_window_id):
         self.file_path = file_path
+        print(self.file_path)
         self.window_size = window_size
         self.window_id = first_window_id
         self.amount_windows = amount_windows
@@ -16,6 +17,7 @@ class DataGenerator:
         self.subject_data = []
 
     def load_subject_data(self):
+        print("Loading subject data...")
         with h5py.File(self.file_path, "r") as file:
             dataset_names = list(file.keys())
             random.shuffle(dataset_names)
@@ -41,6 +43,7 @@ class DataGenerator:
         Returns:
             list: List of data points.
         """
+        print("Generating window data points...")
         data_dict = {"bvp": 64, "eda": 4, "temp": 4}
         data_points = []
         index = 0
@@ -55,7 +58,6 @@ class DataGenerator:
             sampling_step = int(np.round(1000000000 / data_dict[data_type]))
             for i in range(self.window_size * data_dict[data_type]):
                 data_point_value = dataset[index + i]
-                print(time.time_ns() + sampling_step * i)
                 data_points.append(
                     influxdb_client.Point("data")
                     .time(time.time_ns() + sampling_step * i)

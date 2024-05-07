@@ -50,22 +50,15 @@ stress_probability_dict = {
 wear_time_dict = {"work_day": 28800 * 10**9, "all_day": 86400 * 10**9, "not_wear": 0}
 dataGen = PredictionGenerator(days=28, window_size=60, stress_probability_dict=stress_probability_dict, wear_time_dict=wear_time_dict)
 prediction_points = dataGen.generate_predictions()
-
 write_data_influxdb(prediction_points)
 
 
-# dataGenerator = DataGenerator(
-#     file_path=os.path.join(os.environ.get("DATA_PATH"), "testing.h5"), amount_windows=100, stress_ratio=0.5, window_size=60, first_window_id=100000
-# )
-# dataGenerator.load_subject_data()
-# while True:
-#     start_time = time.time()
-
-#     data_points = dataGenerator.generate_window_data_points()
-
-#     write_data_influxdb(data_points)
-
-#     elapsed_time = time.time() - start_time
-
-#     if elapsed_time < 60:
-#         time.sleep(60 - elapsed_time)
+dataGenerator = DataGenerator(file_path=os.path.join("data", "testing.h5"), amount_windows=100, stress_ratio=0.5, window_size=60, first_window_id=100000)
+dataGenerator.load_subject_data()
+while True:
+    start_time = time.time()
+    data_points = dataGenerator.generate_window_data_points()
+    write_data_influxdb(data_points)
+    elapsed_time = time.time() - start_time
+    if elapsed_time < 60:
+        time.sleep(60 - elapsed_time)

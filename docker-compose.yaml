@@ -23,8 +23,6 @@ services:
       - influxdb
     env_file:
       - .env
-    volumes:
-      - ./data:/app/data
 
 volumes:
   influxdb-data:
