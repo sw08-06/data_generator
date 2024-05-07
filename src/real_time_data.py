@@ -7,8 +7,8 @@ import influxdb_client
 
 
 class DataGenerator:
-    def __init__(self, data_path, amount_windows, stress_ratio, window_size, first_window_id):
-        self.data_path = data_path
+    def __init__(self, file_path, amount_windows, stress_ratio, window_size, first_window_id):
+        self.file_path = file_path
         self.window_size = window_size
         self.window_id = first_window_id
         self.amount_windows = amount_windows
@@ -24,13 +24,14 @@ class DataGenerator:
             no_stress_cnt = self.amount_windows - stress_cnt
 
             for dataset_name in dataset_names:
-                dataset = file[dataset_name]
-                if dataset.attrs["label"] == 0 and no_stress_cnt > 0:
+                dataset = file[dataset_name][:].flatten()
+                if file[dataset_name].attrs["label"] == 0 and no_stress_cnt > 0:
                     self.subject_data.append(dataset)
                     no_stress_cnt -= 1
-                elif dataset.attrs["label"] == 1 and stress_cnt > 0:
+                elif file[dataset_name].attrs["label"] == 1 and stress_cnt > 0:
                     self.subject_data.append(dataset)
                     stress_cnt -= 1
+        print(f"Loaded {self.amount_windows} datasets from {self.file_path} for data generation")
 
     def generate_window_data_points(self):
         """
@@ -54,6 +55,7 @@ class DataGenerator:
             sampling_step = int(np.round(1000000000 / data_dict[data_type]))
             for i in range(self.window_size * data_dict[data_type]):
                 data_point_value = dataset[index + i]
+                print(time.time_ns() + sampling_step * i)
                 data_points.append(
                     influxdb_client.Point("data")
                     .time(time.time_ns() + sampling_step * i)
@@ -63,6 +65,12 @@ class DataGenerator:
                     .field("value", data_point_value)
                 )
             index += self.window_size * data_dict[data_type]
+        print(f"Generated window data points with window_id: {self.window_id}")
         self.window_id += 1
-
         return data_points
+
+
+if __name__ == "__main__":
+    dataGenerator = DataGenerator(file_path=os.path.join("data", "testing.h5"), amount_windows=100, stress_ratio=0.5, window_size=60, first_window_id=100000)
+    dataGenerator.load_subject_data()
+    data_points = dataGenerator.generate_window_data_points()
