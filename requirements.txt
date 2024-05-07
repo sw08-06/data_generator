@@ -2,3 +2,4 @@ numpy
 influxdb-client
 python-dotenv
 numpy
+h5py

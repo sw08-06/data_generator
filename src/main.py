@@ -14,7 +14,6 @@ token = os.getenv("INFLUX_TOKEN")
 url = os.getenv("INFLUX_URL")
 
 client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
-
 write_api = client.write_api(write_options=SYNCHRONOUS)
 
 
@@ -52,10 +51,12 @@ prediction_points = dataGen.generate_predictions()
 
 write_data_influxdb(prediction_points)
 
+dataGenerator = DataGenerator(data_path=os.path.join("data", "testing.h5"), amount_windows=100, stress_ratio=0.5, window_size=60, first_window_id=0)
+dataGenerator.load_subject_data()
 while True:
     start_time = time.time()
 
-    data_points = data_generator(60)
+    data_points = dataGenerator.generate_window_data_points(60)
 
     write_data_influxdb(data_points)
 
