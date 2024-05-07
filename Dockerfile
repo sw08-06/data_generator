@@ -6,4 +6,6 @@ COPY . /app
 
 RUN pip install -r requirements.txt
 
+ENV DATA_PATH=/app/data
+
 CMD ["python3", "src/main.py"]

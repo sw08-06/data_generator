@@ -23,6 +23,8 @@ services:
       - influxdb
     env_file:
       - .env
+    volumes:
+      - ${PWD}/data:/app/data
 
 volumes:
   influxdb-data:
