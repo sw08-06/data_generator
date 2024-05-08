@@ -7,6 +7,15 @@ import influxdb_client
 
 class PredictionGenerator:
     def __init__(self, days, window_size, stress_probability_dict, wear_time_dict):
+        """
+        Initialize PredictionGenerator instance.
+
+        Args:
+            days (int): Number of days to generate predictions for.
+            window_size (int): Size of each prediction window in seconds.
+            stress_probability_dict (dict): Dictionary mapping weekend/weekday to hour interval to stress probability.
+            wear_time_dict (dict): Dictionary mapping wear mode to wear time in seconds.
+        """
         self.window_size = window_size * 10**9
         self.days = days
         time_now_seconds = np.round(time.time())
@@ -17,6 +26,12 @@ class PredictionGenerator:
         self.prediction_points = []
 
     def generate_predictions(self):
+        """
+        Generate stress predictions for the specified days and window size.
+
+        Returns:
+            list: List of InfluxDB data points representing predictions.
+        """
         window_id = 0
         current_time = self.start_time_ns
         while current_time < self.end_time_ns:
@@ -40,6 +55,12 @@ class PredictionGenerator:
         return self.prediction_points
 
     def random_wear_mode(self):
+        """
+        Randomly determine wear mode based on probabilities.
+
+        Returns:
+            str: Wear mode.
+        """
         random_number = random.random()
 
         if random_number < 0.6:
@@ -50,18 +71,55 @@ class PredictionGenerator:
             return "not_wear"
 
     def find_hour_interval(self, current_time):
+        """
+        Find the hour interval for a given timestamp.
+
+        Args:
+            current_time (int): Timestamp in nanoseconds.
+
+        Returns:
+            str: Hour interval.
+        """
         hour = datetime.fromtimestamp(current_time / 10**9).hour
         lower = 3 * (hour // 3)
         upper = lower + 3
         return f"{lower}-{upper}"
 
     def determine_weekend_or_weekday(self, timestamp):
+        """
+        Determine if a given timestamp falls on a weekend or weekday.
+
+        Args:
+            timestamp (int): Timestamp in nanoseconds.
+
+        Returns:
+            str: "weekend" or "weekday".
+        """
         date = datetime.fromtimestamp(timestamp / 10**9)
         return "weekend" if date.weekday() in [5, 6] else "weekday"
 
     def calculate_prediction(self, weekend_or_weekday, hour_interval):
+        """
+        Calculate stress prediction based on probabilities.
+
+        Args:
+            weekend_or_weekday (str): "weekend" or "weekday".
+            hour_interval (str): Hour interval.
+
+        Returns:
+            int: 1 for stress, 0 for no stress.
+        """
         return 1 if random.random() < self.stress_probability_dict[weekend_or_weekday][hour_interval] else 0
 
     def format_timestamp(self, time_nano):
+        """
+        Format timestamp into InfluxDB-compatible string.
+
+        Args:
+            time_nano (int): Timestamp in nanoseconds.
+
+        Returns:
+            str: Formatted timestamp string.
+        """
         dt = datetime.fromtimestamp(time_nano / 1e9, timezone.utc)
         return "{}{:03.0f}".format(dt.strftime("%Y-%m-%dT%H:%M:%S.%f"), time_nano % 1e3)

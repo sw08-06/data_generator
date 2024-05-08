@@ -8,6 +8,16 @@ import influxdb_client
 
 class DataGenerator:
     def __init__(self, file_path, amount_windows, stress_ratio, window_size, first_window_id):
+        """
+        Initialize DataGenerator instance.
+
+        Args:
+            file_path (str): Path to the HDF5 file containing subject data.
+            amount_windows (int): Total number of windows to generate.
+            stress_ratio (float): Ratio of stress windows to total windows.
+            window_size (int): Size of each window in seconds.
+            first_window_id (int): ID to start assigning to windows.
+        """
         self.file_path = file_path
         self.window_size = window_size
         self.window_id = first_window_id
@@ -18,7 +28,7 @@ class DataGenerator:
 
     def load_subject_data(self):
         """
-        Loads data in the specified amount of windows
+        Loads and shuffles subject data in the specified amount of windows from the HDF5 file.
         """
         print("Loading subject data...")
         with h5py.File(self.file_path, "r") as file:
@@ -40,11 +50,10 @@ class DataGenerator:
 
     def generate_window_data_points(self):
         """
-        Generates one window of data points.
-        Args:
-            window_size (int): Size of window in seconds.
+        Generates data points for a single window.
+
         Returns:
-            list: List of data points.
+            list: List of InfluxDB data points.
         """
         print("Generating window data points...")
         data_dict = {"bvp": 64, "eda": 4, "temp": 4}
