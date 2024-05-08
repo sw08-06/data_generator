@@ -1,4 +1,3 @@
-import os
 import time
 import random
 import numpy as np
@@ -83,9 +82,3 @@ class DataGenerator:
         self.window_id += 1
         self.start_time += self.window_size * 10**9
         return data_points
-
-
-if __name__ == "__main__":
-    dataGenerator = DataGenerator(file_path=os.path.join("data", "testing.h5"), amount_windows=100, stress_ratio=0.5, window_size=60, first_window_id=100000)
-    dataGenerator.load_subject_data()
-    data_points = dataGenerator.generate_window_data_points()

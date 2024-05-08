@@ -35,17 +35,17 @@ class PredictionGenerator:
         window_id = 0
         current_time = self.start_time_ns
         while current_time < self.end_time_ns:
-            wear_mode = self.random_wear_mode()
+            wear_mode = self._random_wear_mode()
             if wear_mode == "not_wear":
                 current_time += 86400 * 10**9
             else:
                 if wear_mode == "work_day":
                     current_time += 28800 * 10**9
                 for i in range(int(self.wear_time_dict[wear_mode] / self.window_size)):
-                    hour_interval = self.find_hour_interval(current_time)
-                    prediction = self.calculate_prediction(self.determine_weekend_or_weekday(current_time), hour_interval)
+                    hour_interval = self._find_hour_interval(current_time)
+                    prediction = self._calculate_prediction(self._determine_weekend_or_weekday(current_time), hour_interval)
                     self.prediction_points.append(
-                        influxdb_client.Point("prediction").time(self.format_timestamp(current_time)).field("window_id", window_id).field("value", prediction)
+                        influxdb_client.Point("prediction").time(self._format_timestamp(current_time)).field("window_id", window_id).field("value", prediction)
                     )
                     current_time += self.window_size
                     window_id += 1
@@ -54,7 +54,7 @@ class PredictionGenerator:
         print(f"{len(self.prediction_points)} prediction points generated. Highest window_id: {window_id - 1}")
         return self.prediction_points
 
-    def random_wear_mode(self):
+    def _random_wear_mode(self):
         """
         Randomly determine wear mode based on probabilities.
 
@@ -70,7 +70,7 @@ class PredictionGenerator:
         else:
             return "not_wear"
 
-    def find_hour_interval(self, current_time):
+    def _find_hour_interval(self, current_time):
         """
         Find the hour interval for a given timestamp.
 
@@ -85,7 +85,7 @@ class PredictionGenerator:
         upper = lower + 3
         return f"{lower}-{upper}"
 
-    def determine_weekend_or_weekday(self, timestamp):
+    def _determine_weekend_or_weekday(self, timestamp):
         """
         Determine if a given timestamp falls on a weekend or weekday.
 
@@ -98,7 +98,7 @@ class PredictionGenerator:
         date = datetime.fromtimestamp(timestamp / 10**9)
         return "weekend" if date.weekday() in [5, 6] else "weekday"
 
-    def calculate_prediction(self, weekend_or_weekday, hour_interval):
+    def _calculate_prediction(self, weekend_or_weekday, hour_interval):
         """
         Calculate stress prediction based on probabilities.
 
@@ -111,7 +111,7 @@ class PredictionGenerator:
         """
         return 1 if random.random() < self.stress_probability_dict[weekend_or_weekday][hour_interval] else 0
 
-    def format_timestamp(self, time_nano):
+    def _format_timestamp(self, time_nano):
         """
         Format timestamp into InfluxDB-compatible string.
 
