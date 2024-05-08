@@ -17,6 +17,9 @@ class DataGenerator:
         self.start_time = time.time_ns() - window_size * 10**9
 
     def load_subject_data(self):
+        """
+        Loads data in the specified amount of windows
+        """
         print("Loading subject data...")
         with h5py.File(self.file_path, "r") as file:
             dataset_names = list(file.keys())
@@ -55,7 +58,7 @@ class DataGenerator:
             return None
 
         for data_type in list(data_dict.keys()):
-            sampling_step = int(np.round(1000000000 / data_dict[data_type]))
+            sampling_step = int(np.round(10**9 / data_dict[data_type]))
             for i in range(self.window_size * data_dict[data_type]):
                 data_point_value = dataset[index + i]
                 data_points.append(
@@ -69,7 +72,7 @@ class DataGenerator:
             index += self.window_size * data_dict[data_type]
         print(f"Generated window data points with window_id: {self.window_id}")
         self.window_id += 1
-        self.start_time + self.window_size * 10**9
+        self.start_time += self.window_size * 10**9
         return data_points
 
 
