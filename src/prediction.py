@@ -2,7 +2,6 @@ import time
 import random
 from datetime import datetime, timezone
 import numpy as np
-import influxdb_client
 
 
 class PredictionGenerator:
@@ -45,8 +44,13 @@ class PredictionGenerator:
                     hour_interval = self._find_hour_interval(current_time)
                     prediction = self._calculate_prediction(self._determine_weekend_or_weekday(current_time), hour_interval)
                     self.prediction_points.append(
-                        influxdb_client.Point("prediction").time(self._format_timestamp(current_time)).field("window_id", window_id).field("value", prediction)
-                    )
+                        {
+                            "time": self._format_timestamp(current_time),
+                            "window_id": window_id, # field
+                            "value": prediction     # field
+                        }
+                        #influxdb_client.Point("prediction").time(self._format_timestamp(current_time)).field("window_id", window_id).field("value", prediction)
+                    )                    
                     current_time += self.window_size
                     window_id += 1
                 if wear_mode == "work_day":
