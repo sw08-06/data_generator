@@ -1,5 +1,5 @@
 # Data Generator
-This repository houses the code for a service responsible for generating mock physiological data.
+This repository contains the code for the service responsible for generating mock physiological data.
 
 ## Installation
 To set up the project, ensure you have Python and Docker installed on your machine.
