@@ -58,6 +58,9 @@ dataGenerator.load_subject_data()
 while True:
     start_time = time.time()
     data_points = dataGenerator.generate_window_data_points()
+    if data_points == None:
+        print("Real-time data generation finished.")
+        break
     write_data_influxdb(data_points)
     elapsed_time = time.time() - start_time
     if elapsed_time < 60:

@@ -9,12 +9,12 @@ import influxdb_client
 class DataGenerator:
     def __init__(self, file_path, amount_windows, stress_ratio, window_size, first_window_id):
         self.file_path = file_path
-        print(self.file_path)
         self.window_size = window_size
         self.window_id = first_window_id
         self.amount_windows = amount_windows
         self.stress_ratio = stress_ratio
         self.subject_data = []
+        self.start_time = time.time_ns() - window_size * 10**9
 
     def load_subject_data(self):
         print("Loading subject data...")
@@ -52,7 +52,7 @@ class DataGenerator:
             dataset = self.subject_data.pop(0)
         else:
             print("No more data")
-            return
+            return None
 
         for data_type in list(data_dict.keys()):
             sampling_step = int(np.round(1000000000 / data_dict[data_type]))
@@ -60,7 +60,7 @@ class DataGenerator:
                 data_point_value = dataset[index + i]
                 data_points.append(
                     influxdb_client.Point("data")
-                    .time(time.time_ns() + sampling_step * i)
+                    .time(self.start_time + sampling_step * i)
                     .tag("data_type", data_type)
                     .field("window_id", self.window_id)
                     .field("index", index + i)
@@ -69,6 +69,7 @@ class DataGenerator:
             index += self.window_size * data_dict[data_type]
         print(f"Generated window data points with window_id: {self.window_id}")
         self.window_id += 1
+        self.start_time + self.window_size
         return data_points
 
 
