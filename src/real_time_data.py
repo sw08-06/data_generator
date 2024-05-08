@@ -69,7 +69,7 @@ class DataGenerator:
             index += self.window_size * data_dict[data_type]
         print(f"Generated window data points with window_id: {self.window_id}")
         self.window_id += 1
-        self.start_time + self.window_size
+        self.start_time + self.window_size * 10**9
         return data_points
 
 
