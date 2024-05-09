@@ -7,6 +7,7 @@ from config import *
 
 
 def main():
+    time.sleep(10)
     dataGen = PredictionGenerator(days=28, window_size=60, stress_probability_dict=stress_probability_dict, wear_time_dict=wear_time_dict)
     prediction_points = dataGen.generate_predictions()
     post_data("/api/stress-predict", prediction_points)
