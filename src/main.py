@@ -7,12 +7,11 @@ from config import *
 
 
 def main():
-    time.sleep(10)
     dataGen = PredictionGenerator(days=28, window_size=60, stress_probability_dict=stress_probability_dict, wear_time_dict=wear_time_dict)
-    prediction_points = dataGen.generate_predictions()
+    prediction_points, last_window_id = dataGen.generate_predictions()
     post_data("/api/stress-predict", prediction_points)
 
-    dataGenerator = DataGenerator(file_path=os.path.join("data", "testing.h5"), amount_windows=1, stress_ratio=0.5, window_size=60, first_window_id=100000)
+    dataGenerator = DataGenerator(file_path=os.path.join("data", "testing.h5"), amount_windows=1, stress_ratio=0.5, window_size=60, first_window_id=last_window_id + 1)
     dataGenerator.load_subject_data()
     while True:
         start_time = time.time()

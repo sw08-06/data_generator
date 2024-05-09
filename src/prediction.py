@@ -49,7 +49,7 @@ class PredictionGenerator:
                 if wear_mode == "work_day":
                     current_time += 28800 * 10**9
         print(f"{len(self.prediction_points)} prediction points generated. Highest window_id: {window_id - 1}")
-        return self.prediction_points
+        return self.prediction_points, window_id
 
     def _random_wear_mode(self):
         """

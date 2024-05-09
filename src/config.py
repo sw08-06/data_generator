@@ -4,9 +4,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 API_URL = os.getenv("API_URL")
-INFLUX_TOKEN = os.getenv("INFLUX_TOKEN")
-INFLUX_ORG = os.getenv("INFLUX_ORG")
-INFLUX_BUCKET = os.getenv("INFLUX_BUCKET")
 
 stress_probability_dict = {
     "weekend": {
