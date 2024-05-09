@@ -68,13 +68,9 @@ class DataGenerator:
             sampling_step = int(np.round(10**9 / data_dict[data_type]))
             for i in range(self.window_size * data_dict[data_type]):
                 data_point_value = dataset[index + i]
-                data_points.append({
-                    "time": self.start_time + sampling_step * i,
-                    "data_type": data_type,      # tag
-                    "window_id": self.window_id, # field
-                    "index": index + i,          # field
-                    "value": data_point_value    # field
-                })
+                data_points.append(
+                    {"time": self.start_time + sampling_step * i, "data_type": data_type, "window_id": self.window_id, "index": index + i, "value": data_point_value}
+                )
             index += self.window_size * data_dict[data_type]
         print(f"Generated window data points with window_id: {self.window_id}")
         self.window_id += 1
