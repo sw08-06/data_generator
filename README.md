@@ -6,7 +6,7 @@ To install the required packages locally to run the project, use pip with the fo
 pip install -r requirements.txt
 ```
 
-Alternatively, Docker Compose can be used to start up two services. An InfluxDB service and a data generator service. To do this create a `.env` file in the project root directory and populate it with the following environment variables:
+Alternatively, Docker Compose can be used to start up two services. An InfluxDB service and a Data Generator service. To do this create a `.env` file in the project root directory and populate it with the following environment variables:
 ```
 INFLUX_USERNAME="USERNAME"
 INFLUX_PASSWORD="PASSWORD"
