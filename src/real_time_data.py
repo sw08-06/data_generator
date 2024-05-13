@@ -2,6 +2,7 @@ import time
 import random
 import numpy as np
 import h5py
+from sklearn.preprocessing import MinMaxScaler
 
 
 class DataGenerator:
@@ -56,10 +57,28 @@ class DataGenerator:
         print("Generating window data points...")
         data_dict = {"bvp": 64, "eda": 4, "temp": 4}
         data_points = []
+        data_list = []
         index = 0
 
         if len(self.subject_data) > 0:
             dataset = self.subject_data.pop(0)
+
+            data_list.append(dataset[0 : data_dict["bvp"] * self.window_size])
+            data_list.append(dataset[data_dict["bvp"] * self.window_size : data_dict["bvp"] * self.window_size + data_dict["eda"] * self.window_size])
+            data_list.append(
+                dataset[
+                    data_dict["bvp"] * self.window_size
+                    + data_dict["eda"] * self.window_size : data_dict["bvp"] * self.window_size
+                    + data_dict["eda"] * self.window_size
+                    + data_dict["temp"] * self.window_size
+                ]
+            )
+
+            for i, data in enumerate(data_list):
+                data_list[i] = MinMaxScaler().fit_transform(data[:, np.newaxis])
+
+            dataset = np.concatenate(data_list)[:].flatten()
+
         else:
             print("No more data")
             return None

@@ -4,3 +4,4 @@ python-dotenv
 numpy
 h5py
 requests
+scikit-learn
