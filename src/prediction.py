@@ -2,7 +2,6 @@ import time
 import random
 from datetime import datetime, timezone
 import numpy as np
-import influxdb_client
 
 
 class PredictionGenerator:
@@ -41,18 +40,16 @@ class PredictionGenerator:
             else:
                 if wear_mode == "work_day":
                     current_time += 28800 * 10**9
-                for i in range(int(self.wear_time_dict[wear_mode] / self.window_size)):
+                for _ in range(int(self.wear_time_dict[wear_mode] / self.window_size)):
                     hour_interval = self._find_hour_interval(current_time)
                     prediction = self._calculate_prediction(self._determine_weekend_or_weekday(current_time), hour_interval)
-                    self.prediction_points.append(
-                        influxdb_client.Point("prediction").time(self._format_timestamp(current_time)).field("window_id", window_id).field("value", prediction)
-                    )
+                    self.prediction_points.append({"time": current_time, "window_id": window_id, "value": prediction})
                     current_time += self.window_size
                     window_id += 1
                 if wear_mode == "work_day":
                     current_time += 28800 * 10**9
         print(f"{len(self.prediction_points)} prediction points generated. Highest window_id: {window_id - 1}")
-        return self.prediction_points
+        return self.prediction_points, window_id
 
     def _random_wear_mode(self):
         """
@@ -110,16 +107,3 @@ class PredictionGenerator:
             int: 1 for stress, 0 for no stress.
         """
         return 1 if random.random() < self.stress_probability_dict[weekend_or_weekday][hour_interval] else 0
-
-    def _format_timestamp(self, time_nano):
-        """
-        Format timestamp into InfluxDB-compatible string.
-
-        Args:
-            time_nano (int): Timestamp in nanoseconds.
-
-        Returns:
-            str: Formatted timestamp string.
-        """
-        dt = datetime.fromtimestamp(time_nano / 1e9, timezone.utc)
-        return "{}{:03.0f}".format(dt.strftime("%Y-%m-%dT%H:%M:%S.%f"), time_nano % 1e3)

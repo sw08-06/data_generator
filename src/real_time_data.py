@@ -2,7 +2,6 @@ import time
 import random
 import numpy as np
 import h5py
-import influxdb_client
 
 
 class DataGenerator:
@@ -70,12 +69,7 @@ class DataGenerator:
             for i in range(self.window_size * data_dict[data_type]):
                 data_point_value = dataset[index + i]
                 data_points.append(
-                    influxdb_client.Point("data")
-                    .time(self.start_time + sampling_step * i)
-                    .tag("data_type", data_type)
-                    .field("window_id", self.window_id)
-                    .field("index", index + i)
-                    .field("value", data_point_value)
+                    {"time": self.start_time + sampling_step * i, "data_type": data_type, "window_id": self.window_id, "index": index + i, "value": data_point_value}
                 )
             index += self.window_size * data_dict[data_type]
         print(f"Generated window data points with window_id: {self.window_id}")
