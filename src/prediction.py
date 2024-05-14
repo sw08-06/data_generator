@@ -7,7 +7,7 @@ import numpy as np
 class PredictionGenerator:
     def __init__(self, days, window_size, stress_probability_dict, wear_time_dict):
         """
-        Initialize PredictionGenerator instance.
+        Initializes a PredictionGenerator instance.
 
         Args:
             days (int): Number of days to generate predictions for.
@@ -26,7 +26,7 @@ class PredictionGenerator:
 
     def generate_predictions(self):
         """
-        Generate stress predictions for the specified days and window size.
+        Generates stress predictions for the specified days and window size.
 
         Returns:
             list: List of InfluxDB data points representing predictions.
@@ -53,7 +53,7 @@ class PredictionGenerator:
 
     def _random_wear_mode(self):
         """
-        Randomly determine wear mode based on probabilities.
+        Randomly determines wear mode based on probabilities.
 
         Returns:
             str: Wear mode.
@@ -69,7 +69,7 @@ class PredictionGenerator:
 
     def _find_hour_interval(self, current_time):
         """
-        Find the hour interval for a given timestamp.
+        Finds the hour interval for a given timestamp.
 
         Args:
             current_time (int): Timestamp in nanoseconds.
@@ -84,7 +84,7 @@ class PredictionGenerator:
 
     def _determine_weekend_or_weekday(self, timestamp):
         """
-        Determine if a given timestamp falls on a weekend or weekday.
+        Determines if a given timestamp falls on a weekend or weekday.
 
         Args:
             timestamp (int): Timestamp in nanoseconds.
@@ -97,7 +97,7 @@ class PredictionGenerator:
 
     def _calculate_prediction(self, weekend_or_weekday, hour_interval):
         """
-        Calculate stress prediction based on probabilities.
+        Calculates stress prediction based on probabilities.
 
         Args:
             weekend_or_weekday (str): "weekend" or "weekday".
