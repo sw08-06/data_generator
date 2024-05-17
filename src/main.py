@@ -8,7 +8,8 @@ from config import *
 
 def main():
     time.sleep(10)
-    dataGen = PredictionGenerator(days=27, window_size=60, stress_probability_dict=stress_probability_dict, wear_time_dict=wear_time_dict)
+    window_size = 60
+    dataGen = PredictionGenerator(days=27, window_size=window_size, stress_probability_dict=stress_probability_dict, wear_time_dict=wear_time_dict)
     prediction_points, last_window_id = dataGen.generate_predictions()
     post_data("/api/stress-predict", prediction_points)
 
@@ -22,8 +23,8 @@ def main():
             break
         post_data("/api/stress-generator", data_points)
         elapsed_time = time.time() - start_time
-        if elapsed_time < 60:
-            time.sleep(60 - elapsed_time)
+        if elapsed_time < window_size:
+            time.sleep(window_size - elapsed_time)
 
 
 if __name__ == "__main__":
