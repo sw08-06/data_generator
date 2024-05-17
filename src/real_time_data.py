@@ -74,8 +74,8 @@ class DataGenerator:
                 ]
             )
 
-            for i, data in enumerate(data_list):
-                data_list[i] = MinMaxScaler().fit_transform(data[:, np.newaxis])
+            for data in data_list:
+                data = MinMaxScaler().fit_transform(data[:, np.newaxis])
 
             dataset = np.concatenate(data_list)[:].flatten()
 
